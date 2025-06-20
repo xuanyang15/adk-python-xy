@@ -31,12 +31,15 @@ jobs:
         run:
           export PYTHONPATH=$PWD/contributing/samples:$PYTHONPATH
 
+      - name: Check PYTHONPATH
+        run: echo $PYTHONPATH
+
       - name: Run Triaging Script
         env:
           GITHUB_TOKEN: ${{ secrets.ADK_TRIAGE_AGENT }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GOOGLE_GENAI_USE_VERTEXAI: 0
-          OWNER: 'google'
+          OWNER: 'xuangyang15'
           REPO: 'adk-python'
           INTERACTIVE: 0
           EVENT_NAME: ${{ github.event_name }} # 'issues', 'schedule', etc.
