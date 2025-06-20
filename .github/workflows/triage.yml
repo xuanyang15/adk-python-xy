@@ -32,7 +32,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ADK_TRIAGE_AGENT }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GOOGLE_GENAI_USE_VERTEXAI: 0
-          OWNER: 'xuangyang15'
+          OWNER: 'xuanyang15'
           REPO: 'adk-python'
           INTERACTIVE: 0
           EVENT_NAME: ${{ github.event_name }} # 'issues', 'schedule', etc.
