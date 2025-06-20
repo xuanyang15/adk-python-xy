@@ -14,6 +14,7 @@
 
 from google.adk import Agent
 import requests
+from typing import Any
 
 from adk_triaging_agent.settings import BOT_LABEL
 from adk_triaging_agent.settings import is_interactive
@@ -46,7 +47,7 @@ if is_interactive():
   approval_instruction = "Only label them when the user approves the labeling!"
 
 
-def list_unlabeled_issues(issue_count: int) -> dict[str, any]:
+def list_unlabeled_issues(issue_count: int) -> dict[str, Any]:
   """List most recent `issue_count` numer of unlabeled issues in the repo.
 
   Args:
@@ -78,11 +79,11 @@ def list_unlabeled_issues(issue_count: int) -> dict[str, any]:
   return {"status": "success", "issues": unlabeled_issues}
 
 
-def add_label_to_issue(issue_number: str, label: str) -> dict[str, any]:
+def add_label_to_issue(issue_number: int, label: str) -> dict[str, Any]:
   """Add the specified label to the given issue number.
 
   Args:
-    issue_number: issue number of the Github issue, in string foramt.
+    issue_number: issue number of the Github issue
     label: label to assign
 
   Returns:
@@ -108,11 +109,11 @@ def add_label_to_issue(issue_number: str, label: str) -> dict[str, any]:
   }
 
 
-def get_issue(issue_number: str) -> dict[str, any]:
+def get_issue(issue_number: int) -> dict[str, Any]:
   """Get the details of the specified issue number.
 
   Args:
-    issue_number: issue number of the Github issue, in string foramt.
+    issue_number: issue number of the Github issue
 
   Returns:
     The status of this request, with the issue details when successful.

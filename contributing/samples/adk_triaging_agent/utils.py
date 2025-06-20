@@ -14,6 +14,8 @@
 
 from adk_triaging_agent.settings import GITHUB_TOKEN
 import requests
+from typing import Any
+
 
 headers = {
     "Authorization": f"token {GITHUB_TOKEN}",
@@ -22,8 +24,8 @@ headers = {
 
 
 def get_request(
-    url: str, params: dict[str, any] | None = None
-) -> dict[str, any]:
+    url: str, params: dict[str, Any] | None = None
+) -> dict[str, Any]:
   if params is None:
     params = {}
   response = requests.get(url, headers=headers, params=params, timeout=60)
@@ -31,13 +33,13 @@ def get_request(
   return response.json()
 
 
-def post_request(url: str, payload: any) -> dict[str, any]:
+def post_request(url: str, payload: Any) -> dict[str, Any]:
   response = requests.post(url, headers=headers, json=payload, timeout=60)
   response.raise_for_status()
   return response.json()
 
 
-def error_response(error_message: str) -> dict[str, any]:
+def error_response(error_message: str) -> dict[str, Any]:
   return {"status": "error", "message": error_message}
 
 
