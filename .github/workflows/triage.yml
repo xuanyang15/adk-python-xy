@@ -27,13 +27,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests google-adk
 
-      - name: Export environment variables
-        run:
-          export PYTHONPATH=$PWD/contributing/samples:$PYTHONPATH
-
-      - name: Check PYTHONPATH
-        run: echo $PYTHONPATH
-
       - name: Run Triaging Script
         env:
           GITHUB_TOKEN: ${{ secrets.ADK_TRIAGE_AGENT }}
@@ -47,4 +40,5 @@ jobs:
           ISSUE_TITLE: ${{ github.event.issue.title }}
           ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_COUNT_TO_PROCESS: '3' # Process 3 issues at a time on schedule
+          PYTHONPATH: contributing/samples
         run: python -m adk_triaging_agent.main
