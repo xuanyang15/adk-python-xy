@@ -16,14 +16,48 @@ import asyncio
 import time
 
 from adk_triaging_agent import agent
-from adk_triaging_agent.settings import EVENT_NAME, ISSUE_COUNT_TO_PROCESS, ISSUE_NUMBER, OWNER, REPO
+from adk_triaging_agent.settings import EVENT_NAME
+from adk_triaging_agent.settings import GITHUB_BASE_URL
+from adk_triaging_agent.settings import ISSUE_BODY
+from adk_triaging_agent.settings import ISSUE_COUNT_TO_PROCESS
+from adk_triaging_agent.settings import ISSUE_NUMBER
+from adk_triaging_agent.settings import ISSUE_TITLE
+from adk_triaging_agent.settings import OWNER
+from adk_triaging_agent.settings import REPO
+from adk_triaging_agent.utils import get_request
 from adk_triaging_agent.utils import parse_number_string
 from google.adk.agents.run_config import RunConfig
-from google.adk.runners import InMemoryRunner, Runner
+from google.adk.runners import InMemoryRunner
+from google.adk.runners import Runner
 from google.genai import types
+import requests
 
 APP_NAME = "adk_triage_app"
 USER_ID = "adk_triage_user"
+
+
+async def fetch_specific_issue_details(issue_number: int):
+  """Fetches details for a single issue if it's unlabelled."""
+  url = f"{GITHUB_BASE_URL}/repos/{OWNER}/{REPO}/issues/{issue_number}"
+  print(f"Fetching details for specific issue: {url}")
+
+  try:
+    issue_data = get_request(url)
+    if not issue_data.get("labels", None):
+      print(f"Issue #{issue_number} is unlabelled. Proceeding.")
+      return {
+          "number": issue_data["number"],
+          "title": issue_data["title"],
+          "body": issue_data.get("body", ""),
+      }
+    else:
+      print(f"Issue #{issue_number} is already labelled. Skipping.")
+      return None
+  except requests.exceptions.RequestException as e:
+    print(f"Error fetching issue #{issue_number}: {e}")
+    if hasattr(e, "response") and e.response is not None:
+      print(f"Response content: {e.response.text}")
+    return None
 
 
 async def call_agent_async(
@@ -54,7 +88,7 @@ async def call_agent_async(
   return final_response_text
 
 
-async def main_sync():
+async def main():
   runner = InMemoryRunner(
       agent=agent.root_agent,
       app_name=APP_NAME,
@@ -66,14 +100,28 @@ async def main_sync():
 
   if EVENT_NAME == "issues" and ISSUE_NUMBER:
     print(f"EVENT: Processing specific issue due to '{EVENT_NAME}' event.")
-    issume_number = parse_number_string(ISSUE_NUMBER)
-    if not issume_number:
+    issue_number = parse_number_string(ISSUE_NUMBER)
+    if not issue_number:
       print(f"Error: Invalid issue number received: {ISSUE_NUMBER}.")
       return
+
+    specific_issue = await fetch_specific_issue_details(issue_number)
+    if specific_issue is None:
+      print(
+          f"No unlabelled issue details found for #{issue_number} or an error"
+          " occurred. Skipping agent interaction."
+      )
+      return
+
+    issue_title = ISSUE_TITLE or specific_issue["title"]
+    issue_body = ISSUE_BODY or specific_issue["body"]
     prompt = (
-        f"Please triage issue #{issume_number}. If the issue is already"
-        " labelled, please don't change it, just return the labels. If the"
-        " issue is not labelled, please label it. Only label it, do not"
+        f"A new GitHub issue #{issue_number} has been opened or"
+        f' reopened. Title: "{issue_title}"\nBody:'
+        f' "{issue_body}"\n\nBased on the rules, recommend an'
+        " appropriate label and its justification."
+        " Then, use the 'add_label_to_issue' tool to apply the label "
+        "directly to this issue. Only label it, do not"
         " process any other issues."
     )
   else:
@@ -88,15 +136,15 @@ async def main_sync():
 if __name__ == "__main__":
   start_time = time.time()
   print(
-      f"Start traging {OWNER}/{REPO} issues at"
+      f"Start triaging {OWNER}/{REPO} issues at"
       f" {time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(start_time))}"
   )
   print("-" * 80)
-  asyncio.run(main_sync())
+  asyncio.run(main())
   print("-" * 80)
   end_time = time.time()
   print(
-      "Traging finished at"
+      "Triaging finished at"
       f" {time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(end_time))}",
   )
   print("Total script execution time:", f"{end_time - start_time:.2f} seconds")

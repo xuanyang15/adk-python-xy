@@ -12,19 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from google.adk import Agent
-import requests
 from typing import Any
 
 from adk_triaging_agent.settings import BOT_LABEL
-from adk_triaging_agent.settings import is_interactive
+from adk_triaging_agent.settings import GITHUB_BASE_URL
+from adk_triaging_agent.settings import IS_INTERACTIVE
 from adk_triaging_agent.settings import OWNER
 from adk_triaging_agent.settings import REPO
 from adk_triaging_agent.utils import error_response
 from adk_triaging_agent.utils import get_request
 from adk_triaging_agent.utils import post_request
-
-GITHUB_BASE_URL = "https://api.github.com"
+from google.adk import Agent
+import requests
 
 ALLOWED_LABELS = [
     "documentation",
@@ -39,12 +38,12 @@ ALLOWED_LABELS = [
     "web",
 ]
 
-approval_instruction = (
+APPROVAL_INSTRUCTION = (
     "Do not ask for user approval for labeling! If you can't find appropriate"
     " labels for the issue, do not label it."
 )
-if is_interactive():
-  approval_instruction = "Only label them when the user approves the labeling!"
+if IS_INTERACTIVE:
+  APPROVAL_INSTRUCTION = "Only label them when the user approves the labeling!"
 
 
 def list_unlabeled_issues(issue_count: int) -> dict[str, Any]:
@@ -83,7 +82,7 @@ def add_label_to_issue(issue_number: int, label: str) -> dict[str, Any]:
   """Add the specified label to the given issue number.
 
   Args:
-    issue_number: issue number of the Github issue
+    issue_number: issue number of the Github issue.
     label: label to assign
 
   Returns:
@@ -109,34 +108,18 @@ def add_label_to_issue(issue_number: int, label: str) -> dict[str, Any]:
   }
 
 
-def get_issue(issue_number: int) -> dict[str, Any]:
-  """Get the details of the specified issue number.
-
-  Args:
-    issue_number: issue number of the Github issue
-
-  Returns:
-    The status of this request, with the issue details when successful.
-  """
-  url = f"{GITHUB_BASE_URL}/repos/{OWNER}/{REPO}/issues/{issue_number}"
-  try:
-    response = get_request(url)
-  except requests.exceptions.RequestException as e:
-    return error_response(f"Error: {e}")
-  return {"status": "success", "issue": response}
-
-
 root_agent = Agent(
     model="gemini-2.5-pro",
     name="adk_triaging_assistant",
     description="Triage ADK issues.",
     instruction=f"""
-      You are a triaging bot for the Github {REPO} repo with the owner {OWNER}. You will help get issues, and label them.
-      IMPORTANT: {approval_instruction}
+      You are a triaging bot for the Github {REPO} repo with the owner {OWNER}. You will help get issues, and recommend a label.
+      IMPORTANT: {APPROVAL_INSTRUCTION}
       Here are the rules for labeling:
       - If the user is asking about documentation-related questions, label it with "documentation".
       - If it's about session, memory services, label it with "services"
       - If it's about UI/web, label it with "web"
+      - If the user is asking about a question, label it with "question"
       - If it's related to tools, label it with "tools"
       - If it's about agent evalaution, then label it with "eval".
       - If it's about streaming/live, label it with "live".
@@ -149,5 +132,5 @@ root_agent = Agent(
       - the issue summary in a few sentence
       - your label recommendation and justification
     """,
-    tools=[list_unlabeled_issues, add_label_to_issue, get_issue],
+    tools=[list_unlabeled_issues, add_label_to_issue],
 )

@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from adk_triaging_agent.settings import GITHUB_TOKEN
-import requests
 from typing import Any
 
+from adk_triaging_agent.settings import GITHUB_TOKEN
+import requests
 
 headers = {
     "Authorization": f"token {GITHUB_TOKEN}",
