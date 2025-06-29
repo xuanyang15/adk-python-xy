@@ -65,3 +65,9 @@ echo '|  Auto-formatting contributing/...'
 echo '---------------------------------------'
 
 find -L contributing/ -type f -name "*.py" -exec pyink --config pyproject.toml {} +
+
+echo '---------------------------------------'
+echo '|  Auto-formatting scripts/...'
+echo '---------------------------------------'
+
+find -L scripts/ -type f -name "*.py" -exec pyink --config pyproject.toml {} +

@@ -1,4 +1,3 @@
-
 # Copyright 2025 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+
 from dotenv import load_dotenv
+
 load_dotenv(override=True)
 GITHUB_BASE_URL = "https://api.github.com"
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
