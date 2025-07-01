@@ -148,3 +148,4 @@ if __name__ == "__main__":
       f" {time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(end_time))}",
   )
   print("Total script execution time:", f"{end_time - start_time:.2f} seconds")
+  

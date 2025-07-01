@@ -53,3 +53,4 @@ def parse_number_string(number_str: str, default_value: int = 0) -> int:
         f" {default_value}."
     )
     return default_value
+  

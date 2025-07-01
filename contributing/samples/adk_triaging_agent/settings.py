@@ -11,15 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import os
 
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
+
 GITHUB_BASE_URL = "https://api.github.com"
+
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 if not GITHUB_TOKEN:
   raise ValueError("GITHUB_TOKEN environment variable not set")
+
 OWNER = os.getenv("OWNER", "google")
 REPO = os.getenv("REPO", "adk-python")
 BOT_LABEL = os.getenv("BOT_LABEL", "bot_triaged")
@@ -28,4 +32,5 @@ ISSUE_NUMBER = os.getenv("ISSUE_NUMBER")
 ISSUE_TITLE = os.getenv("ISSUE_TITLE")
 ISSUE_BODY = os.getenv("ISSUE_BODY")
 ISSUE_COUNT_TO_PROCESS = os.getenv("ISSUE_COUNT_TO_PROCESS")
+
 IS_INTERACTIVE = os.environ.get("INTERACTIVE", "1").lower() in ["true", "1"]
