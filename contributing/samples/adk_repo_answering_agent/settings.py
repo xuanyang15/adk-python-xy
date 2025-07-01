@@ -24,8 +24,12 @@ GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 if not GITHUB_TOKEN:
   raise ValueError("GITHUB_TOKEN environment variable not set")
 
+VERTEXAI_DATASTORE_ID = os.getenv("VERTEXAI_DATASTORE_ID")
+if not VERTEXAI_DATASTORE_ID:
+  raise ValueError("VERTEXAI_DATASTORE_ID environment variable not set")
+
 OWNER = os.getenv("OWNER", "google")
 REPO = os.getenv("REPO", "adk-python")
 ISSUE_NUMBER = os.getenv("ISSUE_NUMBER")
 
-IS_INTERACTIVE = os.environ.get("INTERACTIVE", "1").lower() in ["true", "1"]
+IS_INTERACTIVE = os.getenv("INTERACTIVE", "1").lower() in ["true", "1"]

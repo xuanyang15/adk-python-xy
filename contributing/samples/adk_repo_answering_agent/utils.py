@@ -43,8 +43,11 @@ def error_response(error_message: str) -> dict[str, Any]:
   return {"status": "error", "message": error_message}
 
 
-def parse_number_string(number_str: str, default_value: int = 0) -> int:
+def parse_number_string(number_str: str | None, default_value: int = 0) -> int:
   """Parse a number from the given string."""
+  if not number_str:
+    return default_value
+
   try:
     return int(number_str)
   except ValueError:
