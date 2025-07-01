@@ -55,6 +55,7 @@ def upload_directory_to_gcs(
 
   storage_client = storage.Client(project=project_id)
   bucket = storage_client.bucket(bucket_name)
+  file_count = 0
   for root, dirs, files in os.walk(source_directory):
     # Modify the 'dirs' list in-place to prevent os.walk from descending
     # into hidden directories.
@@ -88,8 +89,6 @@ def upload_directory_to_gcs(
               html_content, content_type=content_type
           )
         else:  # Python files
-          # Use plain text for Python code
-          content_type = "text/plain"
           bucket.blob(gcs_path).upload_from_filename(
               local_path, content_type=content_type
           )
@@ -100,11 +99,12 @@ def upload_directory_to_gcs(
             f"  - Uploaded {type_msg}: {local_path} ->"
             f" gs://{bucket_name}/{gcs_path}"
         )
+        file_count += 1
       except GoogleAPICallError as e:
         print(f"Error uploading file {local_path}: {e}")
         return False
 
-  print("Sucessfully uploaded all the docs to GCS.")
+  print(f"Sucessfully uploaded {file_count} files to GCS.")
   return True
 
 
@@ -129,7 +129,7 @@ def import_from_gcs_to_vertex_ai(
         f"/dataStores/{data_store_id}/branches/default_branch"
     )
 
-    gcs_uri = f"gs://{gcs_bucket}/{gcs_prefix}/**"
+    gcs_uri = f"gs://{gcs_bucket}/**"
 
     request = discoveryengine.ImportDocumentsRequest(
         parent=parent,
