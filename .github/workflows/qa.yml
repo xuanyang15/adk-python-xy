@@ -40,4 +40,4 @@ jobs:
           INTERACTIVE: 0
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           PYTHONPATH: contributing/samples
-        run: python -m adk_repo_answering_agent.main
+        run: echo $ISSUE_NUMBER
