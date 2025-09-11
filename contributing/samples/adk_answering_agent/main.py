@@ -170,7 +170,7 @@ async def main():
         source_desc = "--discussion argument"
       else:  # args.discussion_file
         with open(args.discussion_file, "r", encoding="utf-8") as f:
-          discussion_data = json.loads(f)
+          discussion_data = json.load(f)
         source_desc = f"file {args.discussion_file}"
 
       # Common validation and processing
