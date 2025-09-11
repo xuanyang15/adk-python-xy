@@ -656,7 +656,7 @@ def fast_api_common_options():
         help="Optional. Whether to enable cloud trace for telemetry.",
     )
     @click.option(
-        "--reload/--no-reload",
+        "--reload/--no_reload",
         default=True,
         help=(
             "Optional. Whether to enable auto reload for server. Not supported"
