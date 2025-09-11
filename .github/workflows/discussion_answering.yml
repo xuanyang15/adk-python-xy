@@ -42,8 +42,8 @@ jobs:
           VERTEXAI_DATASTORE_ID: ${{ secrets.VERTEXAI_DATASTORE_ID }}
           GEMINI_API_DATASTORE_ID: ${{ secrets.GEMINI_API_DATASTORE_ID }}
           GOOGLE_GENAI_USE_VERTEXAI: 1
-          OWNER: 'google'
-          REPO: 'adk-python'
+          OWNER: 'xuanyang15'
+          REPO: 'adk-python-xy'
           INTERACTIVE: 0
           PYTHONPATH: contributing/samples
         run: |
