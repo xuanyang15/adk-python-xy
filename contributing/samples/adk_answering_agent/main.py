@@ -170,7 +170,7 @@ async def main():
         source_desc = "--discussion argument"
       else:  # args.discussion_file
         with open(args.discussion_file, "r", encoding="utf-8") as f:
-          discussion_data = json.load(f)
+          discussion_data = json.loads(f)
         source_desc = f"file {args.discussion_file}"
 
       # Common validation and processing
@@ -208,8 +208,6 @@ async def main():
     # If we have discussion JSON data, include it in the prompt
     # to avoid API call
     if discussion_json_data:
-      import json
-
       discussion_json_str = json.dumps(discussion_json_data, indent=2)
       prompt = (
           f"Please help answer this GitHub discussion #{discussion_number}."
